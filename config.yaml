@@ -1,0 +1,17 @@
+#
+
+# msedgedriver.exe的路径
+driver_path: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\edgedriver_win64\\msedgedriver.exe'
+
+login_url: 'http://zhjw.scu.edu.cn/login'
+username: 'Your Student ID'     # 学号
+password: 'Your Password'       # 密码
+
+loading_sleep_time: 2 # (s) 等待网页加载的时间，网速慢的话可以适当调大
+jumping_wait_time: 10 # (s) 最大等待跳转的时间，网速慢的话可以适当调大
+
+bugfree: # 绝活，不用管
+  bugfree_img_path: './utils/bugfree_img/' # bugfree图片路径 (相对路径，相对于工作目录)
+  img_name: 'buddha.bugfree' # bugfree图片名称
+  start_color: 'FF7EC7' # bugfree图片起始颜色
+  end_color: 'FFED46' # bugfree图片结束颜色
