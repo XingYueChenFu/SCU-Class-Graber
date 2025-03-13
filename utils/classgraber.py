@@ -3,7 +3,6 @@ from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 
 from PIL import Image, ImageEnhance
@@ -11,7 +10,6 @@ from io import BytesIO
 import base64
 
 import time
-import yaml
 import ddddocr
 # from utils import BugFree
 
@@ -24,7 +22,6 @@ class ClassGraber:
         self.render_sleep_time = config['render_sleep_time']
         self.jumping_wait_time = config['jumping_wait_time']
         
-        self.ocr = ddddocr.DdddOcr()
         # self.bugfree = BugFree(config)
         
         self.ocr = ddddocr.DdddOcr(show_ad=False) # 初始化识别器
@@ -63,6 +60,7 @@ class ClassGraber:
             if self._check_has_course():
                 if self._click_choose_course():
                     break
+            time.sleep(self.config['query_interval']) # 等待 query_interval 秒再次查询
             
         self._input_course_captcha()
         self._click_submit_button()
@@ -300,14 +298,13 @@ class ClassGraber:
     def _click_choose_course(self):
         # 查找包含 config['course_id'] 的 <td> 标签
         try:
+            time.sleep(0.1) # 等待标签加载出来
             # 使用 XPath 定位包含 config['course_id'] 的 <td> 标签
             course_td = self.driver.find_element(By.XPATH, f'//td[contains(text(), "{self.config["course_id"]}")]')
             print(f'\033[1;34m[info]\033[0m 找到包含课程 ID {self.config["course_id"]} 的 <td> 标签')
-
             # 找到其父标签 <tr>
             course_tr = course_td.find_element(By.XPATH, './parent::tr')
             print(f'\033[1;34m[info]\033[0m 找到父标签 <tr>')
-
             # 找到 <tr> 下的第一个 <td> 标签
             first_td = course_tr.find_element(By.XPATH, './/td[1]')
             print(f'\033[1;34m[info]\033[0m 找到第一个 <td> 标签')
@@ -395,7 +392,7 @@ class ClassGraber:
             print(f'\033[1;34m[info]\033[0m {fail_to_grab_class.text}')
             return False
         except NoSuchElementException:
-            print(f'\033[1;32m[info]\033[0m 如果前面没有error 选课成功！')
+            print(f'\033[1;32m[Succuss]\033[0m 如果前面没有error 选课成功！')
             return True
         except Exception as e:
             print(f'\033[1;31m[Error]\033[0m 选课失败：{e}')
